@@ -3,7 +3,7 @@ The JmsClient is a simple command line app (spring-boot) to send/receive message
 See application.properties for parameters and default values
 
 Can add brokerUrl, username, password to java command line:
--Damq.brokerURL=failover:(tcp://localhost:61616) -Damq.userName=admin -Damq.password=admin
+-Damq.brokerURL=failover:(tcp://localhost:61616)?jms.prefetchPolicy.all=2 -Damq.userName=admin -Damq.password=admin
 
 Examples:
 
