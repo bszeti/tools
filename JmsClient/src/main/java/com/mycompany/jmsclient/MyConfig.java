@@ -40,12 +40,16 @@ public class MyConfig {
 	@Bean
 	public ConnectionFactory connFactory() {
 		ActiveMQConnectionFactory connFactory = new ActiveMQConnectionFactory(userName, password, brokerURL);
+		//Required for useAsyncSend
+		connFactory.setProducerWindowSize(10240000);
 		if (connPoolSize > 0) {
 			PooledConnectionFactory pooledConnectionFactory = new PooledConnectionFactory(connFactory);
 			pooledConnectionFactory.setMaxConnections(connPoolSize);			
-			//This will stop the thread managing the pool after a few seconds so the app will stop in producer mode 
+			//This will stop the thread managing the pool after a few seconds so the app will stop in producer mode
+			//This also causes message loss with asyncSend if producer flow control is on for long. 
 			pooledConnectionFactory.setIdleTimeout(2000);
-			pooledConnectionFactory.setTimeBetweenExpirationCheckMillis(1000);
+			pooledConnectionFactory.setTimeBetweenExpirationCheckMillis(1000);			
+			log.info("Pool size: {}", connPoolSize);
 			return pooledConnectionFactory;
 		}
 		return connFactory;
@@ -56,6 +60,7 @@ public class MyConfig {
 		JmsTemplate jmsTemplate = new JmsTemplate(connFactory());
 		jmsTemplate.setPubSubDomain(useTopic);
 		jmsTemplate.setDefaultDestinationName(destination);
+		log.info("Destination: {}", destination);
 		return jmsTemplate;
 	}
 
@@ -75,5 +80,6 @@ public class MyConfig {
 		}
 		return null;
 	}
+
 
 }

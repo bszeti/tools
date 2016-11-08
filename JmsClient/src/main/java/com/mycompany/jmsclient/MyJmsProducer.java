@@ -56,8 +56,8 @@ public class MyJmsProducer {
 			}
 
 			log.info("Sending messages... {}x{}", messageCount, messageText.length());
-			for (int i = 0; i < messageCount; i++) {
-				jmsTemplate.convertAndSend(messageText);
+			for (int i = 1; i <= messageCount; i++) {
+				jmsTemplate.convertAndSend(Integer.toString(i)+"-"+messageText);
 				log.info("Sent message #{}", i);
 				if (wait > 0)
 					Thread.sleep(wait);

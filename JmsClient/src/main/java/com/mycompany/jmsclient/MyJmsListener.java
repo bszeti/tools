@@ -1,5 +1,7 @@
 package com.mycompany.jmsclient;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,13 +13,13 @@ public class MyJmsListener {
 	@Value("${consumer.wait}")
 	int waitTime;
 	
-	int counter;
+	AtomicInteger counter = new AtomicInteger();
 
 	@JmsListener(destination = "${destination}", concurrency="${consumer.concurrency}",containerFactory="jmsContainerFactory")
 	public void receiveMessage(String message) throws Exception{
-		log.info("Received #{}; [{}]",++counter, message.length());
+		log.info("Received #{}; [{}]: {}",counter.incrementAndGet(), message.length(), message.substring(0,20)+"...");
 		Thread.sleep(waitTime);
 
-	}
+	} 
 
 }
