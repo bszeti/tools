@@ -17,7 +17,7 @@ public class MyJmsListener {
 
 	@JmsListener(destination = "${destination}", concurrency="${consumer.concurrency}",containerFactory="jmsContainerFactory")
 	public void receiveMessage(String message) throws Exception{
-		log.info("Received #{}; [{}]: {}",counter.incrementAndGet(), message.length(), message.substring(0,20)+"...");
+		log.info("Received #{}; [{}]: {}",counter.incrementAndGet(), message.length(), message.substring(0,Math.min(20,message.length()))+"...");
 		Thread.sleep(waitTime);
 
 	} 

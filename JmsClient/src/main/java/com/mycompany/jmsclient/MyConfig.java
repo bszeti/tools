@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.config.JmsListenerContainerFactory;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.util.StringUtils;
 
 @Configuration
 public class MyConfig {
@@ -33,6 +34,9 @@ public class MyConfig {
 
 	@Value("${destination}")
 	String destination;
+	
+	@Value("${clientId:#{null}}")
+	String clientId;
 
 	@Value("${amq.connPoolSize}")
 	int connPoolSize;
@@ -69,6 +73,7 @@ public class MyConfig {
 		DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
 		factory.setConnectionFactory(connFactory());
 		factory.setPubSubDomain(useTopic);
+		if (!StringUtils.isEmpty(clientId)) factory.setClientId(clientId);
 		return factory;
 	}
 
