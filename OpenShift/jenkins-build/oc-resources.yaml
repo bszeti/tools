@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: List
+metadata: {}
+items:
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: git-config
+  data:
+    config: |
+      [credential]
+          helper = store --file=/home/jenkins/.config/git-secret/credentials
+      [http "http://git.mycompany.com"]
+          sslCAInfo = /home/jenkins/.config/git/myTrustedCA.pem
+    myTrustedCA.pem: |-
+      -----BEGIN CERTIFICATE-----
+      MIIDVzCCAj+gAwIBAgIJAN0sC...
+      -----END CERTIFICATE-----
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: git-secret
+  stringData:
+    ssh-privatekey: |-
+      -----BEGIN RSA PRIVATE KEY-----
+      ...
+      -----END RSA PRIVATE KEY-----
+    credentials: |-
+      https://username:password@git.mycompany.com
+      https://user:pass@github.com
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: git-ssh
+  data:
+    config: |-
+      Host git.mycompany.com
+        StrictHostKeyChecking yes
+        IdentityFile /home/jenkins/.config/git-secret/ssh-privatekey
+    known_hosts: '[git.mycompany.com]:22 ecdsa-sha2-nistp256 AAAdn7...'
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: maven-secret
+  stringData:
+    username: admin
+    password: admin123
